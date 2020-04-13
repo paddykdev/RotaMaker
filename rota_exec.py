@@ -84,19 +84,17 @@ def main():
     errors = ru.checkErrors(staffObject)
     #answer = input(" Process rota? y/n")
     global mainstaffObject
-    if int(errors) <= 10:        
-        mainstaffObject = staffObject
+    if int(errors) <= 15:        
+        return staffObject
     else:
         print(f" Errors: {errors}  Shifts Not Full: {shiftsun}")
         with open('tries.csv', 'a', newline='') as csvfile1:
             writer = csv.writer(csvfile1)
             writer.writerow((errors, shiftsun))
-        mainstaffObject = None
+        os.execl(sys.executable, sys.executable, * sys.argv)
+        #os.execl(sys.executable, 'python', __file__, *sys.argv[1:])
         
-
-mainstaffObject = None
-while mainstaffObject is None:
-    main()
+mainstaffObject = main()
 
 
 def fromatcsv(data):

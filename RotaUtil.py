@@ -1,4 +1,5 @@
 import random
+import time
 
 staff = {"Carer": {
     1: {"fname": "Rebecca", "lname": "Herbert", "shifts": 5, "am": True, "pm": False, "ns": False},
@@ -57,6 +58,10 @@ class Employee:
         }
         return fullrow
 
+def mySeed():
+    current_milli_time = lambda: int(round(time.time() * 1000))
+    return current_milli_time()
+
 def myDictRandom(myDict):
     current_list = list(myDict.keys())
     copied_list = list(current_list)
@@ -77,28 +82,6 @@ def getStaffObject():
     staffdict= {}
     for carer in staff["Carer"]:
         staffdict[f"{staff['Carer'][carer]['fname'][:1].lower()}{staff['Carer'][carer]['lname'].lower()}"] = Employee(staff["Carer"][carer])
-    """staffdict = {
-        "rherbert": Employee(staff["Carer"][1]),
-        "therbert": Employee(staff["Carer"][2]),
-        "jpolish": Employee(staff["Carer"][3]),
-        "ddebbie": Employee(staff["Carer"][4]),
-        "aeddie": Employee(staff["Carer"][5]),
-        "deddie": Employee(staff["Carer"][6]),
-        "labudabwenga": Employee(staff["Carer"][7]),
-        "lsmith": Employee(staff["Carer"][8]),
-        "cjebadiah": Employee(staff["Carer"][9]),
-        "treefa": Employee(staff["Carer"][10]),
-        "aspanna": Employee(staff["Carer"][11]),
-        "rarnie": Employee(staff["Carer"][12]),
-        "skeema": Employee(staff["Carer"][13]),
-        "slaughy": Employee(staff["Carer"][14]),
-        "tpara": Employee(staff["Carer"][15]),
-    }"""
-    """staffkeys = list(staffdict.keys())
-    random.SystemRandom().shuffle(staffkeys)
-    staffObject = {}
-    for key in staffkeys:
-        staffObject[key] = staffdict[key]"""
     staffObject = myDictRandom(staffdict)
     return staffObject
 
@@ -125,9 +108,10 @@ def getStaffList(sent_period, staffdict):
             else:
                 continue
     newlist = []
-    for value in sorted(stafflist, key=lambda _: random.random()):
+    for value in sorted(stafflist, key=lambda _: random.random(), reverse=True):
         newlist.append(value)
-    random.SystemRandom().shuffle(newlist)
+    random.seed(mySeed())
+    random.Random().shuffle(newlist)
     return newlist
 
 
