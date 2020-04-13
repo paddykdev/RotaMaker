@@ -1,176 +1,22 @@
+import csv
 import json
-import random
+import os
+import sys
+import time
 
-staff = {"Carer": {
-    1: {"fname": "Rebecca", "lname": "Herbert", "shifts": 5, "am": True, "pm": True},
-    2: {"fname": "Toni", "lname": "Herbert", "shifts": 3, "am": True, "pm": True},
-    3: {"fname": "Justyna", "lname": "Polish", "shifts": 4, "am": True, "pm": True},
-    4: {"fname": "Debbie", "lname": "Debbie", "shifts": 5, "am": True, "pm": True},
-    5: {"fname": "Andrea", "lname": "Eddie", "shifts": 5, "am": True, "pm": True},
-    6: {"fname": "Darren", "lname": "Eddie", "shifts": 5, "am": True, "pm": True},
-    7: {"fname": "Lisa", "lname": "Abudabwenga", "shifts": 5, "am": True, "pm": True},
-    8: {"fname": "Laura", "lname": "Smith", "shifts": 5, "am": True, "pm": True},
-    9: {"fname": "Collun", "lname": "Jebadiah", "shifts": 3, "am": True, "pm": True},
-    10: {"fname": "Taylor", "lname": "Reefa", "shifts": 5, "am": False, "pm": True},
-    11: {"fname": "Anna", "lname": "Spanna", "shifts": 5, "am": False, "pm": True},
-    12: {"fname": "Raani", "lname": "Arnie", "shifts": 5, "am": False, "pm": True},
-    13: {"fname": "Seema", "lname": "Keema", "shifts": 2, "am": False, "pm": True},
-    14: {"fname": "Saffie", "lname": "Laughy", "shifts": 2, "am": False, "pm": True},
-    15: {"fname": "Tara", "lname": "Para", "shifts": 3, "am": True, "pm": False},
-}}
+import RotaUtil as ru
+import ShiftPattern as sp
 
 
-class Employee:
-    def __init__(self, dict):
-        self.fname = dict["fname"]
-        self.lname = dict["lname"]
-        self.am = dict["am"]
-        self.pm = dict["pm"]
-        self.shifts = dict["shifts"]
-        self.shifts_assigned = 0
-        self.actualshifts = {}
-
-    def __str__(self):
-        return f"{self.fname} {self.lname}"
-
-    def shiftsLeft(self):
-        shiftsleft = self.shifts - self.shifts_assigned
-        return shiftsleft
-    
-    
-    def getShift(self, term):
-        for shift in self.actualshifts.keys():
-            if shift == term:
-                return (shift, self.actualshifts[shift])
-            else:
-                continue
-    
-    def week(self):
-        fullrow = {
-            "Saturday": self.getShift("Saturday"),
-            "Sunday": self.getShift("Sunday"),
-            "Monday": self.getShift("Monday"),
-            "Tuesday": self.getShift("Tuesday"),
-            "Wednesday": self.getShift("Wednesday"),
-            "Thursday": self.getShift("Thursday"),
-            "Friday": self.getShift("Friday"),        
-        }
-        return fullrow
-
-
-staffdict = {
-    "rherbert": Employee(staff["Carer"][1]),
-    "therbert": Employee(staff["Carer"][2]),
-    "jpolish": Employee(staff["Carer"][3]),
-    "ddebbie": Employee(staff["Carer"][4]),
-    "aeddie": Employee(staff["Carer"][5]),
-    "deddie": Employee(staff["Carer"][6]),
-    "labudabwenga": Employee(staff["Carer"][7]),
-    "lsmith": Employee(staff["Carer"][8]),
-    "cjebadiah": Employee(staff["Carer"][9]),
-    "treefa": Employee(staff["Carer"][10]),
-    "aspanna": Employee(staff["Carer"][11]),
-    "rarnie": Employee(staff["Carer"][12]),
-    "skeema": Employee(staff["Carer"][13]),
-    "slaughy": Employee(staff["Carer"][14]),
-    "tpara": Employee(staff["Carer"][15]),
-}
-staffkeys = list(staffdict.keys())
-print(staffkeys)
-random.shuffle(staffkeys)
-staffObject = {}
-for key in staffkeys:
-    staffObject[key] = staffdict[key]
-
-
-
-table = {
-    "AM": {
-        "Saturday": {
-            1: None, 2: None, 3: None, 4: staffObject["cjebadiah"].__str__(), 5: None
-        },
-        "Sunday": {
-            1: None, 2: None, 3: None, 4: staffObject["cjebadiah"].__str__(), 5: staffObject["jpolish"].__str__()
-        },
-        "Monday": {
-            1: None, 2: None, 3: None, 4: staffObject["cjebadiah"].__str__(), 5: None
-        },
-        "Tuesday": {
-            1: None, 2: None, 3: None, 4: None, 5: None
-        },
-        "Wednesday": {
-            1: None, 2: None, 3: None, 4: None, 5: staffObject["jpolish"].__str__()
-        },
-        "Thursday": {
-            1: None, 2: None, 3: None, 4: None, 5: None
-        },
-        "Friday": {
-            1: None, 2: None, 3: None, 4: None, 5: None
-        },
-    },
-    "PM": {
-        "Saturday": {
-            1: None, 2: None, 3: None, 4: None
-        },
-        "Sunday": {
-            1: staffObject["jpolish"].__str__(), 2: None, 3: None, 4: None
-        },
-        "Monday": {
-            1: None, 2: None, 3: None, 4: None
-        },
-        "Tuesday": {
-            1: None, 2: None, 3: None, 4: staffObject["skeema"].__str__()
-        },
-        "Wednesday": {
-            1: staffObject["jpolish"].__str__(), 2: None, 3: None, 4: staffObject["skeema"].__str__()
-        },
-        "Thursday": {
-            1: None, 2: None, 3: None, 4: None
-        },
-        "Friday": {
-            1: None, 2: None, 3: None, 4: None
-        },
-    },
-}
-
-for period in table:
+"""for period in table:
     for day in table[period]:
         for shift in table[period][day]:
             for stobj in staffObject:
                 if table[period][day][shift] == staffObject[stobj].__str__():
-                    staffObject[stobj].shifts_assigned += 1
+                    staffObject[stobj].shifts_assigned += 1"""
 
 
-
-def getStaffList(sent_period, staffdict):
-    stafflist = []
-    #print(staffdict)
-    if sent_period.lower() == "am":
-        for staff_ in staffdict:
-            staff = staffdict[staff_]
-            if staff.am == True:
-                if staff.shiftsLeft() == 0:
-                    continue
-                else:
-                    stafflist.append(staff_)
-            else:
-                continue
-    else:
-        for staff_ in staffdict:
-            staff = staffdict[staff_]
-            if staff.pm == True:
-                if staff.shiftsLeft() == 0:
-                    continue
-                else:
-                    stafflist.append(staff_)
-            else:
-                continue    
-    random.shuffle(stafflist)
-    return stafflist
-
-
-def gethighest(listtocalc):
-    # print(listtocalc)
+def gethighest(listtocalc, staffObject):
     lowest_staff = None
     lowest_amount = 0
     for staffa in listtocalc:
@@ -180,82 +26,94 @@ def gethighest(listtocalc):
     return lowest_staff
 
 
-def checkDay(dayshift, employ):
+def checkDay(dayshift, employ, staffObject):
     check = True
     if employ == None:
         return check
     for shift_ in dayshift:
-        # print(dayshift[shift_])
         if dayshift[shift_] == staffObject[employ].__str__():
             check = False
-        #print(check, employ)
 
     return check
 
+done = False
 
 def main():
-    for period in table:
-        #print(f"{period} : {table[period]}")
-        for day in table[period]:
-            # print(f"{day} : {table[period][day]}")
-            for shift in table[period][day]:
+    staff = ru.staff
+    staffObject = ru.getStaffObject()
+    shiftpattern = sp.pattern
+
+    for day in shiftpattern:
+        for shift in shiftpattern[day]:
+            for slot in shiftpattern[day][shift]:
+                for stobj in staffObject:
+                    if shiftpattern[day][shift][slot] == staffObject[stobj].__str__():
+                        staffObject[stobj].shifts_assigned += 1
+                    else:
+                        continue
+
+    for day in shiftpattern:
+        for shift in shiftpattern[day]:
+            for slot in shiftpattern[day][shift]:
                 staffObjectcopy = staffObject.copy()
-                #print(f"{shift} : {table[period][day][shift]}")
-                if table[period][day][shift] is None:
-                    stafflist = getStaffList(period, staffObjectcopy)
-                    lowestshiftstaff = gethighest(stafflist)
-                    check = checkDay(table[period][day], lowestshiftstaff)
+                if shiftpattern[day][shift][slot] == None:
+                    stafflist = ru.getStaffList(shift, staffObjectcopy)
+                    lowestshiftstaff = gethighest(stafflist, staffObject)
+                    check = checkDay(shiftpattern[day][shift], lowestshiftstaff, staffObject)
                     while check is False:
                         del staffObjectcopy[lowestshiftstaff]
-                        stafflist = getStaffList(period, staffObjectcopy)
-                        lowestshiftstaff = gethighest(stafflist)
-                        check = checkDay(table[period][day], lowestshiftstaff)
+                        stafflist = ru.getStaffList(shift, staffObjectcopy)
+                        lowestshiftstaff = gethighest(stafflist, staffObject)
+                        check = checkDay(
+                            shiftpattern[day][shift], lowestshiftstaff, staffObject)
                     if lowestshiftstaff:
-                        table[period][day][shift] = staffObject[lowestshiftstaff].__str__()
+                        shiftpattern[day][shift][slot] = staffObject[lowestshiftstaff].__str__()
                         staffObject[lowestshiftstaff].shifts_assigned += 1
-                else:
-                    continue
-    for value in staffObject.values():
-        print(f"{value.__str__()}  {value.shiftsLeft()}")
-    answer = input(" Process rota? y/n")
-    if answer.lower() == "y":
-        return True
+                    else:
+                        continue
+    shiftsun = 0
+    count = 0
+    for day in shiftpattern:
+        for shift in shiftpattern[day]:
+            for staff in staffObject:
+                for slot in shiftpattern[day][shift]:
+                    shiftstaff = shiftpattern[day][shift][slot]
+                    if shiftstaff == staffObject[staff].__str__():
+                        staffObject[staff].actualshifts[day] = shift
+                        count += 1
+    errors = ru.checkErrors(staffObject)
+    #answer = input(" Process rota? y/n")
+    if int(errors) <= 18:
+        return staffObject
     else:
-        main()
+        print(f" Errors: {errors}  Shifts Not Full: {shiftsun}")
+        with open('tries.csv', 'a', newline='') as csvfile1:
+            writer = csv.writer(csvfile1)
+            writer.writerow((errors, shiftsun))
+        os.execl(sys.executable, sys.executable, * sys.argv)
+        
 
-main()
-count = 0
-for period in table:
-    for day in table[period]:
-        for staff in staffObject:
-            for shift in table[period][day]:
-                shiftstaff = table[period][day][shift]            
-                if shiftstaff == staffObject[staff].__str__():
-                    staffObject[staff].actualshifts[day] = period
-                    count += 1
-                    #print(shiftstaff, period, day, shift, count)
+staffObject = main()
+
 
 def fromatcsv(data):
-    print(data)
     if data == False:
-        return ""
+        return "None"
     elif data == None:
-        return ""
-    elif data[1] == "AM":
-        #print(data[0])
+        return "None"
+    elif data == "AM":
         return "Morning"
-    elif data[1] == "PM":
-        #print(data[0])
+    elif data == "PM":
         return "Evening"
+    elif data == "NS":
+        return "Night"
     else:
-        return ""
+        return "None"
 
-
-import csv
-import time
 
 with open('rota.csv', 'w', newline='') as csvfile:
-    fieldnames = ['Employee', 'Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+    fieldnames = ['Employee', 'Saturday', 'Sunday', 'Monday',
+                  'Tuesday', 'Wednesday', 'Thursday', 'Friday']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
     writer.writeheader()
@@ -270,4 +128,3 @@ with open('rota.csv', 'w', newline='') as csvfile:
             'Wednesday': fromatcsv(details['Wednesday']),
             'Thursday': fromatcsv(details['Thursday']),
             'Friday': fromatcsv(details['Friday'])})
-        time.sleep(1)
